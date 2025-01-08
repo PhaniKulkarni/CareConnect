@@ -1,0 +1,7 @@
+.venv
+backend/__pycache__
+backend/.env
+.env
+t.ipynb
+RAG_Using_Snowflake_Cortex_Search_Setup_Notebook.ipynb
+test.py
