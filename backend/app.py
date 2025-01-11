@@ -2,7 +2,9 @@ import streamlit as st
 from connection import SnowflakeConnection
 from conversation_handler import ConversationHandler
 from cortex_completion import CortexCompletion
-
+import os
+import time
+from upload_prescription import upload_and_extract_prescription  # Import the prescription functionality
 def initialize_session_state():
     """Initialize session state variables"""
     print("Initializing session state")
@@ -69,7 +71,27 @@ def initialize_handlers():
         )
     
     return True
-
+'''
+def upload_and_process_file(uploaded_file):
+    """Upload a PDF file and process it in Snowflake"""
+    if uploaded_file is not None:
+        # Create a unique file name
+        unique_file_name = f"{int(time.time())}_{uploaded_file.name}"
+        file_path = f"temp_{unique_file_name}"
+        
+        with open(file_path, "wb") as f:
+            f.write(uploaded_file.read())
+        
+        # Upload and process the file
+        with st.spinner("Uploading and processing the file..."):
+            try:
+                st.session_state.connection.upload_to_snowflake(file_path, unique_file_name)
+                st.success(f"{uploaded_file.name} has been uploaded and processed successfully.")
+            except Exception as e:
+                st.error(f"Failed to process the file: {e}")
+            finally:
+                os.remove(file_path)
+'''
 def main():
     st.title(":speech_balloon: Chat Document Assistant with Snowflake Cortex")
     
@@ -82,7 +104,15 @@ def main():
     
     # Configure sidebar
     config_sidebar()
-    
+    '''
+    uploaded_file = st.file_uploader("Upload a PDF file for processing", type=["pdf"])
+    if uploaded_file:
+        upload_and_process_file(uploaded_file)
+    '''
+    uploaded_prescription = st.file_uploader("Upload a Prescription (.doc, .docx, or .pdf)", type=["doc", "docx", "pdf"])
+    prescription_text_chunks = []
+    if uploaded_prescription:
+        prescription_text_chunks = upload_and_extract_prescription(uploaded_prescription)
     # Display available documents
     st.write("This is the list of documents you already have and that will be used to answer your questions:")
     
@@ -112,10 +142,12 @@ def main():
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
                 # Get response
+                prescription_text = "\n".join(prescription_text_chunks) if prescription_text_chunks else ""
                 response_text, relative_paths = st.session_state.cortex_completion.complete(
                     question,
                     st.session_state.model_name,
                     st.session_state.rag,
+                    prescription_text,
                     st.session_state.category_value
                 )
                 

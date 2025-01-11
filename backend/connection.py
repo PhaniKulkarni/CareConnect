@@ -71,3 +71,21 @@ class SnowflakeConnection:
             self.session.close()
         if self.connection:
             self.connection.close()
+    '''
+    def upload_to_snowflake(self, file_path: str, file_name: str):
+        try:
+        # Use PUT command to upload the file to the Snowflake stage
+            print(file_path)
+            print(file_name)
+            upload_cmd = f"PUT file://{file_path} @docs AUTO_COMPRESS=FALSE OVERWRITE=TRUE"
+            self.session.sql(upload_cmd).collect()
+        
+        # Call the stored procedure with the uploaded file name
+            process_cmd = f"CALL PROCESS_UPLOADED_FILE('{file_path}')"
+            response = self.session.sql(process_cmd).collect()
+
+        # Debugging output
+            print(f"Processing response: {response}")
+        except Exception as e:
+            raise RuntimeError(f"Error uploading file to Snowflake: {e}")
+'''

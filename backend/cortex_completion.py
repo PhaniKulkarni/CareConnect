@@ -39,11 +39,11 @@ class CortexCompletion:
             print(f"Error getting similar chunks: {str(e)}")
             return {"results": []}
 
-    def create_prompt(self, question: str, use_rag: bool, category: str = "ALL") -> Tuple[str, set]:
+    def create_prompt(self, question: str, use_rag: bool, prescription_text,category: str = "ALL") -> Tuple[str, set]:
         """Create prompt for completion"""
         if use_rag:
             prompt_context = self.get_similar_chunks(question, category)
-            
+            print("PROMPT CONTEXT:----",prompt_context)
             # Extract context information from chunks
             context_info = []
             relative_paths = set()
@@ -64,6 +64,8 @@ class CortexCompletion:
             #             print("Debug - Relative path not found")
             
             context_text = "\n".join(context_info)
+            print(prescription_text)
+            combined_text=prompt_context+prescription_text
             print("Debug - Context text: ", context_text)
             chat_history = ConversationHandler.fetch_history()
             prompt = f"""
@@ -79,7 +81,7 @@ class CortexCompletion:
                 {chat_history}
                 </chat_history>
                 <context>          
-                {prompt_context}
+                {combined_text}
                 </context>
                 
 
@@ -94,10 +96,10 @@ class CortexCompletion:
                 
         return prompt, relative_paths
 
-    def complete(self, question: str, model_name: str, use_rag: bool, category: str = "ALL") -> Tuple[str, set]:
+    def complete(self, question: str, model_name: str, use_rag: bool, prescription_text:str, category: str = "ALL") -> Tuple[str, set]:
         """Complete the prompt using Snowflake Cortex"""
         print("Debug - Completing prompt")
-        prompt, relative_paths = self.create_prompt(question, use_rag, category)
+        prompt, relative_paths = self.create_prompt(question, use_rag,prescription_text, category)
         print(f"Debug - Prompt: {prompt}")
         cmd = "select snowflake.cortex.complete(?, ?) as response"
         
