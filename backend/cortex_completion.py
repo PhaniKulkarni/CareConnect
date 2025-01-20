@@ -42,14 +42,10 @@ class CortexCompletion:
     def create_prompt(self, question: str, use_rag: bool, prescription_text,category: str = "ALL") -> Tuple[str, set]:
         """Create prompt for completion"""
         if use_rag:
-<<<<<<< HEAD
-            prompt_context = self.get_similar_chunks(question+prescription_text, category)
-=======
             # preprocess the prescription text  remove the special characters and unnecessary spaces
             # prescription_text = " ".join(prescription_text) if prescription_text else ""
             question_enriched = question + " \n this prescription \n " + prescription_text
             prompt_context = self.get_similar_chunks(question_enriched, category)
->>>>>>> ac2aa19203dc294e50d599042753f8914fb58c53
             print("PROMPT CONTEXT:----",prompt_context)
             # Extract context information from chunks
             context_info = []

@@ -87,16 +87,10 @@ def initialize_handlers():
         )
 
     return True
-<<<<<<< HEAD
-def main():
-    st.title(":speech_balloon: CareConnect")
-    
-=======
 
 def main():
     st.title(":speech_balloon: Chat Document Assistant with Snowflake Cortex")
 
->>>>>>> ac2aa19203dc294e50d599042753f8914fb58c53
     # Initialize session state
     initialize_session_state()
     
@@ -106,10 +100,6 @@ def main():
 
     # Configure sidebar
     config_sidebar()
-<<<<<<< HEAD
-=======
-
->>>>>>> ac2aa19203dc294e50d599042753f8914fb58c53
     uploaded_prescription = st.file_uploader("Upload a Prescription (.doc, .docx, or .pdf)", type=["doc", "docx", "pdf"])
     prescription_text_chunks = []
     if uploaded_prescription:
