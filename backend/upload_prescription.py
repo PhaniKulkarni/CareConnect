@@ -1,5 +1,5 @@
 import os
-from langchain.document_loaders import PyMuPDFLoader  # Import LangChain loader for .doc files
+from langchain_community.document_loaders import PyMuPDFLoader # Import LangChain loader for .doc files
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import streamlit as st
 

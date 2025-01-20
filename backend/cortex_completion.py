@@ -42,31 +42,38 @@ class CortexCompletion:
     def create_prompt(self, question: str, use_rag: bool, prescription_text,category: str = "ALL") -> Tuple[str, set]:
         """Create prompt for completion"""
         if use_rag:
-            prompt_context = self.get_similar_chunks(question, category)
+            # preprocess the prescription text  remove the special characters and unnecessary spaces
+            # prescription_text = " ".join(prescription_text) if prescription_text else ""
+            question_enriched = question + " \n this prescription \n " + prescription_text
+            prompt_context = self.get_similar_chunks(question_enriched, category)
             print("PROMPT CONTEXT:----",prompt_context)
             # Extract context information from chunks
             context_info = []
             relative_paths = set()
             # print("debug create prompt")
+            json_data = json.loads(prompt_context)
+            relative_paths = set(item['relative_path'] for item in json_data['results'])
             # if "results" in prompt_context and isinstance(prompt_context["results"], list):
-            #     for i , result in enumerate(prompt_context["results"]):
-            #         chunk = result.get("chunk", "")
-            #         relative_path= result.get("relative_path", "")
-            #         print(chunk)
-            #         if "chunk" in result:
-            #             context_info.append(chunk)
+            #     for result in prompt_context["results"]:
+            #         # Validate that result is a dictionary
+            #         if isinstance(result, dict):
+            #             # chunk = result.get("chunk", "")
+            #             relative_path = result["relative_path"]
+
+            #             # Append the chunk if available
+            #             # if chunk:
+            #             #     context_info.append(chunk)
+
+            #             # Add the relative path if available
+            #             if relative_path:
+            #                 relative_paths.add(relative_path)
             #         else:
-            #             print("Debug - Chunk not found")
-                    
-            #         if "relative_path" in result:
-            #             relative_paths.add(relative_path)
-            #         else:
-            #             print("Debug - Relative path not found")
+            #             print(f"Debug - Invalid result format: {result}")
             
             context_text = "\n".join(context_info)
-            print(prescription_text)
+            # print(prescription_text)
             combined_text=prompt_context+prescription_text
-            print("Debug - Context text: ", context_text)
+            # print("Debug - Context text: ", context_text)
             chat_history = ConversationHandler.fetch_history()
             prompt = f"""
                 You are an expert chat assistance that extracts information from the CONTEXT provided
@@ -98,25 +105,25 @@ class CortexCompletion:
 
     def complete(self, question: str, model_name: str, use_rag: bool, prescription_text:str, category: str = "ALL") -> Tuple[str, set]:
         """Complete the prompt using Snowflake Cortex"""
-        print("Debug - Completing prompt")
+        # print("Debug - Completing prompt")
         prompt, relative_paths = self.create_prompt(question, use_rag,prescription_text, category)
-        print(f"Debug - Prompt: {prompt}")
+        # print(f"Debug - Prompt: {prompt}")
         cmd = "select snowflake.cortex.complete(?, ?) as response"
         
         # Execute the completion
         df_response = self.session.sql(cmd, params=[model_name, prompt]).collect()
-        print(f"Debug - df_response type: {type(df_response)}")
-        print(f"Debug - df_response content: {df_response}")
+        # print(f"Debug - df_response type: {type(df_response)}")
+        # print(f"Debug - df_response content: {df_response}")
         # Safely access the response
         if len(df_response) > 0:
-            print(f"Debug - df_response type: {type(df_response)}")
-            print(f"Debug - df_response content: {df_response}")
+            # print(f"Debug - df_response type: {type(df_response)}")
+            # print(f"Debug - df_response content: {df_response}")
 
             response_text = str(df_response[0].RESPONSE)
         else:
             response_text = "Sorry, I couldn't generate a response."
-        print(f"Debug - Response type: {type(df_response)}")
-        print(f"Debug - Response content: {df_response}")
+        # print(f"Debug - Response type: {type(df_response)}")
+        # print(f"Debug - Response content: {df_response}")
         
         return response_text, relative_paths
 
