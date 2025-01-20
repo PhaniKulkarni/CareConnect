@@ -7,7 +7,7 @@ import time
 from upload_prescription import upload_and_extract_prescription  # Import the prescription functionality
 from snowflake.snowpark.context import get_active_session
 
-session = get_active_session()
+
 
 def initialize_session_state():
     """Initialize session state variables"""
@@ -93,7 +93,7 @@ def main():
 
     # Initialize session state
     initialize_session_state()
-
+    
     # Initialize handlers
     if not initialize_handlers():
         return
@@ -145,7 +145,7 @@ def main():
                     (path, st.session_state.cortex_completion.get_document_url(path)) for path in relative_paths
                 ]
                 # config_sidebar()
-                
+                session = get_active_session()
                 if relative_paths != "None" and st.session_state.show_documents:
                     with st.sidebar.expander("Related Documents" , expanded=True):
                         for path in relative_paths:
