@@ -28,7 +28,6 @@ class SnowflakeConnection:
             "database": self.database,
             "schema": self.schema
         }
-        print(connection_parameters)
         return Session.builder.configs(connection_parameters).create()
 
     def connect(self):
