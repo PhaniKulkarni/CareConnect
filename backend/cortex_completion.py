@@ -42,7 +42,7 @@ class CortexCompletion:
     def create_prompt(self, question: str, use_rag: bool, prescription_text,category: str = "ALL") -> Tuple[str, set]:
         """Create prompt for completion"""
         if use_rag:
-            prompt_context = self.get_similar_chunks(question, category)
+            prompt_context = self.get_similar_chunks(question+prescription_text, category)
             print("PROMPT CONTEXT:----",prompt_context)
             # Extract context information from chunks
             context_info = []

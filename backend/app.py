@@ -71,29 +71,8 @@ def initialize_handlers():
         )
     
     return True
-'''
-def upload_and_process_file(uploaded_file):
-    """Upload a PDF file and process it in Snowflake"""
-    if uploaded_file is not None:
-        # Create a unique file name
-        unique_file_name = f"{int(time.time())}_{uploaded_file.name}"
-        file_path = f"temp_{unique_file_name}"
-        
-        with open(file_path, "wb") as f:
-            f.write(uploaded_file.read())
-        
-        # Upload and process the file
-        with st.spinner("Uploading and processing the file..."):
-            try:
-                st.session_state.connection.upload_to_snowflake(file_path, unique_file_name)
-                st.success(f"{uploaded_file.name} has been uploaded and processed successfully.")
-            except Exception as e:
-                st.error(f"Failed to process the file: {e}")
-            finally:
-                os.remove(file_path)
-'''
 def main():
-    st.title(":speech_balloon: Chat Document Assistant with Snowflake Cortex")
+    st.title(":speech_balloon: CareConnect")
     
     # Initialize session state
     initialize_session_state()
@@ -104,11 +83,6 @@ def main():
     
     # Configure sidebar
     config_sidebar()
-    '''
-    uploaded_file = st.file_uploader("Upload a PDF file for processing", type=["pdf"])
-    if uploaded_file:
-        upload_and_process_file(uploaded_file)
-    '''
     uploaded_prescription = st.file_uploader("Upload a Prescription (.doc, .docx, or .pdf)", type=["doc", "docx", "pdf"])
     prescription_text_chunks = []
     if uploaded_prescription:
