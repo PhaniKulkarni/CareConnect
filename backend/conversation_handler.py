@@ -16,7 +16,7 @@ class ConversationHandler:
         self.available_models = [
             'mixtral-8x7b',
             'snowflake-arctic',
-            'mistral-large',
+            'mistral-large2',
             'llama3-8b',
             'llama3-70b',
             'reka-flash',
