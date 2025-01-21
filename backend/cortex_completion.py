@@ -46,7 +46,6 @@ class CortexCompletion:
             # prescription_text = " ".join(prescription_text) if prescription_text else ""
             question_enriched = question + " \n this prescription \n " + prescription_text
             prompt_context = self.get_similar_chunks(question_enriched, category)
-            print("PROMPT CONTEXT:----",prompt_context)
             # Extract context information from chunks
             context_info = []
             relative_paths = set()
