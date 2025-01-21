@@ -89,7 +89,7 @@ def initialize_handlers():
     return True
 
 def main():
-    st.title(":speech_balloon: Chat Document Assistant with Snowflake Cortex")
+    st.title(":speech_balloon: Care Connect")
 
     # Initialize session state
     initialize_session_state()
